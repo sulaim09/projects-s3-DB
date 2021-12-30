@@ -1,0 +1,38 @@
+ow to perform Destroy?
+
+It is not that straight forward as back end is referencing S3 bucket, if we delete S3 bucket, back end will not where to reference. So we need to perform below steps to perform destroy:
+
+1. remove back end reference in the main.tf by commenting out backend section of the code.
+
+sudo vi main.tf
+
+remove the below code or comment out:
+
+/*
+
+terraform {
+  backend "s3" {
+    #Replace this with your bucket name!
+    bucket         = "terraform-coachdevops-state"
+    key            = "dc/s3/terraform.tfstate"
+    region         = "us-east-2"
+    #Replace this with your DynamoDB table name!
+    dynamodb_table = "tf-up-and-run-locks"
+    encrypt        = true
+    }
+}
+
+*/
+
+We need to initialize again. so type below command
+
+terraform init -migrate-state
+
+type yes
+
+Now you will see the local state file have been updated.
+
+Now perform you can delete all the resources created by Terraform including S3 bucket and Dynamo table.
+
+terraform destroy
+
